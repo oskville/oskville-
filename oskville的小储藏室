@@ -1,0 +1,62 @@
+//二维凸包模板题 P2742 
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+#include<cmath>
+#include<queue>
+#include<set>
+#include<map>
+#include<ctime>
+#include<cstdlib>
+#define LL long long
+#define int LL
+#define re register
+using namespace std;
+const LL N = 5e4+10;
+int n,m=1,top=1;
+struct node
+{
+	double x,y;
+}p[N],st[N];
+struct vec
+{
+	double x,y;
+}v[N];
+
+double check(node a1,node a2,node b1,node b2 )
+{
+    return (a2.x-a1.x)*(b2.y-b1.y)-(b2.x-b1.x)*(a2.y-a1.y);
+}
+double dis(node a,node b)
+{
+	return sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
+}
+bool cmp(node a,node b)
+{	double c=check(p[1],a,p[1],b);
+	if(c>0) return 1;
+	if(c<0) return 0;
+	return dis(p[1],a)<dis(p[1],b);
+}
+signed main() 
+{
+	cin>>n;
+	for(re int i=1;i<=n;i++)
+	{
+		cin>>p[i].x>>p[i].y;
+		if(i!=1&&p[i].y<p[1].y) swap(p[i],p[1]);
+	}
+	sort(p+2,p+1+n,cmp);
+	st[1]=p[1];
+	for(re int i=2;i<=n;i++)
+	{
+		while(top>1&&check(st[top-1],st[top],st[top],p[i])<=0) top--;
+		st[++top]=p[i];
+	}
+	st[top+1]=p[1];
+	double ans=0;
+	for(re int i=1;i<=top;i++)
+		ans+=dis(st[i],st[i+1]);
+	printf("%.2lf\n",ans);
+    return 0;
+}
